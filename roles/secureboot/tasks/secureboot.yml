@@ -1,0 +1,15 @@
+---
+- name: Copy Secure Boot Key and CRT
+  block:
+    - copy: src=etc/secureboot dest=/etc/ owner=root group=root mode=0600
+    - copy: src=etc/pacman.d dest=/etc/ owner=root group=root
+    - copy: src=boot/client dest=/boot/ owner=root group=root mode=0600
+    - template: src=sbupdate.j2 dest=/etc/default/sbupdate
+    - pacman: name=sbupdate-git state=present update_cache=yes
+    - pacman: name=fwupd state=present update_cache=yes
+    - template: src=uefi.conf.j2 dest=/etc/fwupd/uefi.conf
+    - shell: /usr/bin/sbupdate
+    - systemd: name=fwupd.service state=restarted
+      #    - shell: /usr/bin/efibootmgr -B -b "{{ item }}"
+      #      loop: "{{ range(0, 6, 1)|list }}"
+      #      ignore_errors: true

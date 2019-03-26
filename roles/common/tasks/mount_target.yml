@@ -1,0 +1,25 @@
+---
+- name: Mount root device
+  mount:
+    path: /mnt
+    src: /dev/mapper/lvm-root
+    opts: rw
+    state: mounted
+    fstype: ext4
+
+- block:
+  - name:  Mount boot/EFI partition
+    mount:
+      path: /mnt/boot
+      src: "{{device}}1"
+      opts: rw
+      state: mounted
+      fstype: vfat
+  rescue:
+    - command: mkfs.vfat {{ device }}1
+    - mount:
+         path: /mnt/boot
+         src: "{{device}}1"
+         opts: rw
+         state: mounted
+         fstype: vfat

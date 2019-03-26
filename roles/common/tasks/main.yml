@@ -1,0 +1,19 @@
+---
+- import_tasks: delvm.yml
+  tags: [delvm]
+- import_tasks: vars.yml
+  tags: [vars]
+  when: device is undefined
+
+- import_tasks: delvm.yml
+  tags: [delvm]
+- import_tasks: partition.yml
+  tags: [part]
+- import_tasks: mount_target.yml
+  tags: [mount]
+- import_tasks: pacstrap.yml
+  tags: [packages]
+- import_tasks: config.yml
+  tags: [config]
+- import_tasks: test.yml
+  tags: [test]

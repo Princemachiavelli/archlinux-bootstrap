@@ -1,0 +1,41 @@
+- name: install lightdm login manager
+  pacman: 
+      name: lightdm,lightdm-gtk-greeter,xorg-server
+      state: latest
+      
+- name: install packages for ldap/kerboros
+  pacman:
+    name: openldap,nss-pam-ldapd,sssd
+    state: latest
+
+- name: install browsers
+  pacman:
+    name: chromium firefox
+    state: latest
+
+- name: install gnome DE
+  pacman:
+     name: gnome gnome-extra
+     state: latest
+
+- name: avahi
+  pacman:
+    name: avahi nss-mdns
+    state: latest
+
+- name: printing support
+  pacman:
+    name: cups gtk3-print-backends cups-pdf
+
+- name: enable avahi
+  command: systemctl enable --now avahi-daemon.service
+
+- name: enable cups service
+  command: systemctl enable --now org.cups.cupsd.service
+
+- name: enable login manager service
+  command: systemctl enable lightdm.service
+
+- name: start login manager service
+  systemd: name=lightdm.service state=started
+

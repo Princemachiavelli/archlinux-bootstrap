@@ -1,0 +1,13 @@
+- name: Archlinux unattended installer
+  hosts: localhost
+  connection: local
+  vars:
+    packages: base python i3-wm vim sddm zsh ansible openssh threelayout intel-ucode avahi
+    efiloc: /mnt/boot
+    rootpassword: $6$z5DObQs7IJKBSCY4$ZX8IOOvlPIBwlu3tby2RJgNYT7JQoXepI2gyhssM.CirWaYVZ5Nu/gdIhpWcDBnJJwtfC7D7qvE13dHYHmuxo1
+    target: /mnt
+    hostname: msg="{{ lookup('csvfile', '{} file=hostnames.csv delimiter=,'.format(ansible_default_ipv4.macaddress)) }}"
+  roles:
+    - common
+    - {role: uefi, tags: ['uefi'] }
+    - {role: post, tags: ['post']}  

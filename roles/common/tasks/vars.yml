@@ -1,0 +1,12 @@
+---
+- name: Print partitions
+  debug:
+    msg: "{{ ansible_devices }}"
+
+
+- name: set target device
+  set_fact:
+    device: "/dev/{{ item }}"
+  when: (ansible_devices[item].removable == "0")
+  with_items: "{{ ansible_devices.keys() }}"
+

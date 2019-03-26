@@ -1,0 +1,5 @@
+---
+- import_tasks: packages.yml
+  tags: [postpac]
+- import_tasks: locale.yml
+  tags: [locale]

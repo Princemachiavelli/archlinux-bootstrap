@@ -1,0 +1,16 @@
+- name: Archlinux unattended installer
+  hosts: localhost
+  connection: local
+  vars:
+    #packages: base python i3-wm gvim sddm zsh ansible openssh intel-ucode avahi
+    efiloc: /mnt/boot
+    rootpassword: $6$z5DObQs7IJKBSCY4$ZX8IOOvlPIBwlu3tby2RJgNYT7JQoXepI2gyhssM.CirWaYVZ5Nu/gdIhpWcDBnJJwtfC7D7qvE13dHYHmuxo1
+    target: /mnt
+    mines_repo_host: labbuild-test1.mines.edu:15678
+  vars_prompt:
+    - name: "hostname"
+      prompt: "Enter hostname"
+      private: no
+  roles:
+    - common
+    - {role: uefi, tags: ['uefi'] }

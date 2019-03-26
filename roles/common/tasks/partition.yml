@@ -1,0 +1,79 @@
+---
+- name: Print current device
+  debug:
+    msg: "device = {{ device }}"
+
+- name: unmount target folders
+  command: umount -l {{item}}
+  ignore_errors: true
+  with_items:
+    - /mnt/boot
+    - /mnt
+
+- name: Remove lvm vg
+  lvg:
+    vg: lvm
+    state: absent
+    force: yes
+  
+- name: Remove first part
+  parted:
+    device: "{{device}}"
+    number: "{{ item }}"
+    state: absent
+  with_items:
+    - 1
+    - 2
+    - 3
+    - 4
+  ignore_errors: true
+
+- name: Create EFI partition
+  parted:
+    device: "{{device}}"
+    number: 1
+    label: gpt
+    part_end: 1GB
+    state: present
+    flags: [esp, boot]
+
+- name: Format boot partition
+  filesystem:
+    fstype: vfat
+    dev: "{{device}}1"
+
+- name: Create system partition
+  parted:
+    device: "{{device}}"
+    number: 2
+    label: gpt
+    flags: [ lvm ]
+    state: present
+    part_start: 1GB
+
+- name: Create lvm vg
+  lvg:
+    vg: lvm
+    pvs: "{{device}}2"
+
+- name: Create swap lv
+  lvol:
+    vg: lvm
+    lv: swap
+    state: present
+    size: 2g
+    force: yes
+
+- name: Create root lv
+  lvol:
+    vg: lvm
+    lv: root
+    state: present
+    size: 100%FREE
+    force: yes
+      
+
+- name: Format root part    
+  filesystem:
+    fstype: ext4
+    dev: /dev/mapper/lvm-root

@@ -1,0 +1,11 @@
+[Match]
+Name=e*
+
+[Network]
+DHCP=yes
+Domains=mines.edu adit.mines.edu
+
+[DHCP]
+UseHostname=true
+SendHostname=true
+ClientIdentifier=mac

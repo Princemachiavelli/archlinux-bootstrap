@@ -1,0 +1,3 @@
+- name: Deactive LVM VG(s)
+  command: vgchange -an {{ hostname }}-vg
+  ignore_errors: yes

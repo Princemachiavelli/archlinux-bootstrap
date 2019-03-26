@@ -1,0 +1,9 @@
+- block:
+  - find: path=/mnt file_type=any recurse=yes 
+    register: files
+  - file: state=absent path={{ item.path }}
+    ignore_errors: true
+    with_items: "{{ files.files }}"
+
+- name: Install packages into target device
+  command: "pacstrap /mnt {{packages}}"

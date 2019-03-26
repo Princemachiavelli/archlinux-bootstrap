@@ -1,0 +1,9 @@
+KEY_DIR="/etc/secureboot"
+KEYFILE="DB.key"
+CRTFILE="DB.crt"
+ESP_DIR="/boot"
+OUT_DIR="EFI/Arch"
+SPLASH="/usr/share/systemd/bootctl/splash-arch.bmp"
+BACKUP=1
+EXTRA_SIGN=('/boot/EFI/systemd/systemd-bootx64.efi' '/usr/lib/fwupd/efi/fwupdx64.efi.signed')
+CMDLINE_DEFAULT="root=/dev/mapper/lvm-root rw quiet vga=current"

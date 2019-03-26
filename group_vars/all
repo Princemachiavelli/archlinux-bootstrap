@@ -1,0 +1,5 @@
+---
+packages: base i3-gaps dmenu intel-ucode ansible openssh-gssapi vim zsh threelayout ufw
+target: /mnt
+#device: /dev/vda
+#target_device: /dev/vda

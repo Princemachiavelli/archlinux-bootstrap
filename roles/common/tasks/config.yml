@@ -1,0 +1,75 @@
+---    
+- name: copy users.yml to target
+  copy:
+    src: users.yml
+    dest: "{{target}}/root/users.yml"
+
+- name: copy jhoffer signing key
+  copy:
+    src: jhoffer.gpg
+    dest: "{{target}}/root/jhoffer.gpg"
+   
+- name: set root user password
+  command: "arch-chroot {{target}} ansible-playbook /root/users.yml"
+
+- name: Configure mkinitcpio conf
+  copy:
+    src: mkinitcpio.conf
+    dest: "{{target}}/etc/mkinitcpio.conf"
+
+- name: Generate initcpio 
+  command: arch-chroot {{target}} mkinitcpio -p linux
+    
+- name: Configure sshd config
+  copy:
+    src: sshd_config
+    dest: "{{target}}/etc/ssh/sshd_config"
+
+- name: Configure locales
+  copy:
+    src: locale.gen
+    dest: "{{target}}/etc/locale.gen"
+
+- name: Generate locales
+  command: arch-chroot {{target}} locale-gen
+
+- name: Generate fstab
+  command: genfstab {{target}} >> {{target}}/etc/fstab
+
+- name: Copy network config
+  copy:
+    src: 25-wired.network
+    dest: "{{target}}/etc/systemd/network/25-wired.network"
+- name: create conf folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  with_items:
+    - '{{target}}/etc/avahi/services'
+
+- name: copy ssh avahi service conf
+  copy:
+    src: ssh.service
+    dest: "{{target}}/etc/avahi/services/ssh.service"
+
+- name: Enable systemd-networkd 
+  command: arch-chroot {{target}} ln -s /usr/lib/systemd/system/{{ item }} /etc/systemd/system/multi-user.target.wants/{{ item }}
+  with_items:
+    - systemd-networkd.service
+    - avahi-daemon.service
+    - sshd.service
+
+- name: Set hostname
+  copy: content="{{hostname}}.mines.edu" dest=/mnt/etc/hostname
+
+- name: configure krb5 and keytab
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: root
+    group: root
+    mode: 0600
+  with_items:
+    - {src: "keytabs/krb5.keytab.{{hostname}}", dest: '/etc/krb5.keytab' }
