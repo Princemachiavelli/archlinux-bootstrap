@@ -22,3 +22,5 @@
   copy:
     src: arch.conf
     dest: "{{efiloc}}/loader/entries/arch.conf"
+- import_tasks: bios.yml
+  tags: [bios]
