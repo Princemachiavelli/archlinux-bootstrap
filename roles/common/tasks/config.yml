@@ -73,3 +73,6 @@
     mode: 0600
   with_items:
     - {src: "keytabs/krb5.keytab.{{hostname}}", dest: '/etc/krb5.keytab' }
+
+- name: configure pacman.conf
+  template: src=pacman.conf.j2 dest=/mnt/etc/pacman.conf

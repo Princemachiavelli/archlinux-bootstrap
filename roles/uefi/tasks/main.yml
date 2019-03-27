@@ -1,16 +1,4 @@
 ---
-- name: Copy Secure Boot Key and CRT
-  block:
-    - copy: src=etc/secureboot dest=/mnt/etc/ owner=root group=root mode=0600
-    - copy: src=etc/pacman.d dest=/mnt/etc/ owner=root group=root
-    - copy: src=boot/client dest=/mnt/boot/ owner=root group=root mode=0600
-    - template: src=sbupdate.j2 dest=/mnt/etc/default/sbupdate
-    - shell: arch-chroot /mnt pacman -Sy 
-    - shell: arch-chroot /mnt pacman -S sbupdate-git --noconfirm
-    # Need to confirm fwupd package doesn't overwrite this.. or just deploy latter 
-    - template: src=uefi.conf.j2 dest=/mnt/etc/fwupd/uefi.conf
-    - shell: arch-chroot /mnt /usr/bin/sbupdate
-    
 # Keep systemd-boot install for backup 
 - name: Intall bootctl loader
   command: arch-chroot /mnt bootctl --path=/boot install
@@ -24,3 +12,19 @@
     dest: "{{efiloc}}/loader/entries/arch.conf"
 - import_tasks: bios.yml
   tags: [bios]
+
+
+- name: Copy Secure Boot Key and CRT
+  block:
+    - copy: src=etc/secureboot dest=/mnt/etc/ owner=root group=root mode=0600
+    - copy: src=etc/pacman.d dest=/mnt/etc/ owner=root group=root
+    - copy: src=boot/client dest=/mnt/boot/ owner=root group=root mode=0600
+    - template: src=sbupdate.j2 dest=/mnt/etc/default/sbupdate
+    - shell: arch-chroot /mnt pacman -Sy 
+    - shell: arch-chroot /mnt pacman -S sbupdate-git fwupd --noconfirm
+    - template: src=uefi.conf.j2 dest=/mnt/etc/fwupd/uefi.conf
+    # need to do this once before pacman hooks takes over
+    - copy: remote_src=true src=/mnt/usr/lib/fwupd/efi/fwupdx64.efi dest=/mnt/usr/lib/fwupd/efi/fwupdx64.efi.signed
+    - shell: arch-chroot /mnt /usr/bin/sbupdate
+    - shell: efibootmgr --verbose --disk {{ device }} --part 1 --create --label "Arch Secure Boot" --loader /EFI/Arch/linux-signed.efi
+    

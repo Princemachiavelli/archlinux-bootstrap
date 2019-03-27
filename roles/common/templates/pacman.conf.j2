@@ -94,18 +94,8 @@ Include = /etc/pacman.d/mirrorlist
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 
-[custom]
-SigLevel = Optional TrustAll
-Server = http://{{ mines_repo_host }}/pacman/$repo/$arch
-
 [mines2]
 SigLevel = Optional TrustAll
-Server = http://{{ mines_repo_host }}/pacman/$repo/$arch
-
-# An example of a custom package repository.  See the pacman manpage for
-# tips on creating your own repositories.
-#[custom]
-#SigLevel = Optional TrustAll
-#Server = file:///home/custompkgs
+Server = http://{{ mines_repo_host}}/pacman/$repo/$arch
 
 

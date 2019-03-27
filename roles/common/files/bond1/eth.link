@@ -1,0 +1,6 @@
+[Match]
+Type={{ item.mac }}
+
+[Link]
+MACAddressPolicy=persistent
+Name=eth{{ item.index }}

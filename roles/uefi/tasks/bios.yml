@@ -1,8 +1,10 @@
 - name: install dell command configure
-  pacman: name=command-configure state=present update_cache=yes
+  pacman: name=dell-command-configure state=present update_cache=yes
 
 - name: set setuppwd
-  command: /opt/dell/dcc/cctk --SysPwd={{ bios.setuppwd }}
+  command: /opt/dell/dcc/cctk --setuppwd={{ bios.setuppwd }}
+  ignore_errors: yes
+  when: (isdell | bool)
 
 - name: Set SATA mode to AHCI (Disable Intel RAID)
   command: /opt/dell/dcc/cctk --valsetuppwd={{ bios.setuppwd }} --embsataraid=ahci
