@@ -1,0 +1,1 @@
+Automated Archlinux Installation. It is used to confgure the Linux Labs accross campus and Isengard server. Currently it is pretty bespoke for Colorado School of Mine's needs but is undergoing changes to make it more reuseable. 
