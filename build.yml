@@ -9,6 +9,7 @@
     mines_repo_host: labbuild-test1.mines.edu:15678
     isdell: true
     bios:
+      oldsetuppwd: ""
       setuppwd: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           34333637366633343636616365666338303063366665663534386663373232643962363362346665
